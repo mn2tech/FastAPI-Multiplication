@@ -1,0 +1,109 @@
+FastAPI Multiplication API Setup Guide
+1. Install FastAPI & Uvicorn
+Before creating the API, install the necessary packages:
+pip install fastapi uvicorn
+
+
+2. Create Your FastAPI App (app.py)
+Write this Python script to handle multiplication:
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Numbers(BaseModel):
+    num1: int
+    num2: int
+
+@app.post("/multiply")
+async def multiply(data: Numbers):
+    return {"result": data.num1 * data.num2}
+
+
+3. Run Your FastAPI Server
+Start your server using:
+uvicorn app:app --reload
+
+
+Your API will be accessible at http://127.0.0.1:8000.
+4. Test API Requests in Postman
+- Open Postman.
+- Set request type to POST.
+- Enter the URL:
+http://127.0.0.1:8000/multiply
+- Go to the Body tab, select raw, and choose JSON format.
+- Enter this JSON:
+{
+    "num1": 5,
+    "num2": 3
+}
+- Click Send—you should get a response like:
+{
+    "result": 15
+}
+
+
+5. Build the HTML Interface (index.html)
+Create a simple web form to interact with your API:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication API</title>
+    <script>
+        async function multiplyNumbers() {
+            let num1 = document.getElementById("num1").value;
+            let num2 = document.getElementById("num2").value;
+
+            let response = await fetch("http://127.0.0.1:8000/multiply", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ num1: parseInt(num1), num2: parseInt(num2) })
+            });
+
+            let result = await response.json();
+            document.getElementById("result").innerText = "Result: " + result.result;
+        }
+    </script>
+</head>
+<body>
+    <h2>Multiplication API</h2>
+    <label>Number 1: <input type="number" id="num1"></label><br><br>
+    <label>Number 2: <input type="number" id="num2"></label><br><br>
+    <button onclick="multiplyNumbers()">Multiply</button>
+    <h3 id="result"></h3>
+</body>
+</html>
+
+
+6. Fix CORS Issues in FastAPI
+If your web page doesn’t communicate with FastAPI, add CORS middleware:
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all domains; restrict as needed.
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+Restart your FastAPI server:
+uvicorn app:app --reload
+
+
+7. Debugging & Verifying Results
+- Press F12 in your browser → Console to check errors.
+- If FastAPI isn’t running, restart:
+uvicorn app:app --reload
+- Confirm API and HTML page are communicating correctly.
+Next Steps
+Now that your API works, you can: ✅ Style the webpage with CSS
+✅ Add more math operations (addition, subtraction, division)
+✅ Deploy the API online
+Let me know what you'd like to do next! 🚀🔥
+
+This document has all the steps in a clean format. Copy it, save it as FastAPI_Multiplication_Guide.txt, and let me know if you need anything else before moving forward! 🚀
